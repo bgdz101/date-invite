@@ -228,17 +228,33 @@
   noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); });
   noBtn.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
 
+  const TELEGRAM_BOT_TOKEN = '8891632995:AAGdB9fvwrgM0UiO0bBmKWJxPgSDOpYva_w';
+  const TELEGRAM_CHAT_ID = '265504274';
+
+  function notifyTelegram(text) {
+    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text })
+    }).catch(() => {});
+  }
+
   function sayYes() {
     document.getElementById('question').style.display = 'none';
     const surprise = document.getElementById('surprise');
     surprise.classList.add('show');
 
     const dateVal = document.getElementById('dateInput').value;
+    let message = 'Наташа сказала ТАК! 🎉';
     if (dateVal) {
       const d = new Date(dateVal);
       const formatted = d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
       document.getElementById('confirmedDate').textContent = 'Зустрічаємось ' + formatted + '! 📅';
+      message += '\nОбрана дата: ' + formatted;
+    } else {
+      message += '\n(дату ще не обрала)';
     }
+    notifyTelegram(message);
   }
 </script>
 
